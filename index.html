@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Simple Habit Tracker</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <style>
+    body {
+      background: #eaecee;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      min-height: 100vh;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .container {
+      background: white;
+      min-width: 300px;
+      padding: 2rem 2.2rem 1.3rem 2.2rem;
+      border-radius: 11px;
+      box-shadow: 0 4px 18px 0 rgba(0,0,0,0.09);
+    }
+    h1 {
+      color: #19be6b;
+      text-align: center;
+      margin-bottom: 1.4rem;
+      font-size: 1.6rem;
+    }
+    .habit-form {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 1.1rem;
+    }
+    .habit-form input[type="text"] {
+      padding: 7px;
+      border: 1px solid #cccccc;
+      border-radius: 5px;
+      font-size: 1rem;
+      flex-grow: 1;
+    }
+    .habit-form button {
+      padding: 7px 15px;
+      border-radius: 5px;
+      border: none;
+      background: #19be6b;
+      color: #fff;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.18s;
+    }
+    .habit-form button:hover {
+      background: #138a4a;
+    }
+    ul#habit-list {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 0.7rem 0;
+    }
+    ul#habit-list li {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #f9fafc;
+      margin-bottom: 7px;
+      padding: 7px 10px;
+      border-radius: 4px;
+      font-size: 1.1rem;
+      color: #333;
+    }
+    .habit-label {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+    .done {
+      text-decoration: line-through;
+      color: #95a5a6;
+    }
+    .del-btn {
+      background: #fe6060;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.18s;
+      font-size: 0.95rem;
+      margin-left: 8px;
+    }
+    .del-btn:hover {
+      background: #c0392b;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Habit Tracker</h1>
+    <form class="habit-form" autocomplete="off" onsubmit="addHabit(event)">
+      <input type="text" id="habit-name" placeholder="New habit (e.g. Exercise)" required />
+      <button type="submit">Add</button>
+    </form>
+    <ul id="habit-list"></ul>
+  </div>
+  <script>
+    const habits = [];
+
+    function renderHabits() {
+      const ul = document.getElementById('habit-list');
+      ul.innerHTML = '';
+      habits.forEach((habit, i) => {
+        const li = document.createElement('li');
+        const label = document.createElement('span');
+        label.className = 'habit-label' + (habit.done ? ' done' : '');
+        // Checkbox
+        const chk = document.createElement('input');
+        chk.type = 'checkbox';
+        chk.checked = habit.done;
+        chk.onclick = () => toggleDone(i);
+        // Name
+        const nameSpan = document.createElement('span');
+        nameSpan.textContent = habit.name;
+        label.appendChild(chk);
+        label.appendChild(nameSpan);
+        li.appendChild(label);
+        // Remove button
+        const delBtn = document.createElement('button');
+        delBtn.className = 'del-btn';
+        delBtn.textContent = 'Remove';
+        delBtn.onclick = () => removeHabit(i);
+        li.appendChild(delBtn);
+        ul.appendChild(li);
+      });
+    }
+
+    function addHabit(e) {
+      e.preventDefault();
+      const name = document.getElementById('habit-name').value.trim();
+      if (name) {
+        habits.push({ name, done: false });
+        renderHabits();
+        document.getElementById('habit-name').value = '';
+      }
+    }
+
+    function removeHabit(index) {
+      habits.splice(index, 1);
+      renderHabits();
+    }
+
+    function toggleDone(index) {
+      habits[index].done = !habits[index].done;
+      renderHabits();
+    }
+
+    // Initial render
+    renderHabits();
+  </script>
+</body>
+</html>
